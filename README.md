@@ -1,5 +1,5 @@
 <p align='center'>
-  <img src='https://github.com/mist8kengas/ghost-ping-bot/raw/master/assets/logo.png' alt='' width='128px' height='128px'>
+  <img src='https://github.com/mist8kengas/ghost-ping-bot/raw/master/assets/logo.png' alt='' width='128px' height='128px' data-colorset='3d2645-832161-da4167-f0eff4'>
 </p>
 <p align='center'>
   <img src='https://img.shields.io/github/issues/mist8kengas/ghost-ping-bot?style=for-the-badge' alt='Repo Issues' title='Repo Issues'/>
@@ -22,5 +22,3 @@ Installation:
 3. Configure bot by using `.env` file:
     - `GPB_BOT_TOKEN`: Discord bot token (required)
 4. Run the bot by running `npm run start` in the directory
-
-`3d2645-832161-da4167-f0eff4`
