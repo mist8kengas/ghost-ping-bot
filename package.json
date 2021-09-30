@@ -1,0 +1,24 @@
+{
+  "name": "ghost-ping-bot",
+  "version": "1.0.0",
+  "description": "Detects ghost pings in your Discord server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mist8kengas/ghost-ping-bot.git"
+  },
+  "author": "mist8kengas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mist8kengas/ghost-ping-bot/issues"
+  },
+  "homepage": "https://github.com/mist8kengas/ghost-ping-bot#readme",
+  "dependencies": {
+    "discord.js": "^13.1.0",
+    "dotenv": "^10.0.0"
+  }
+}
