@@ -1,6 +1,7 @@
 module.exports = {
     name: 'help',
     description: 'Display commands and their uses',
+    permissions: ['SEND_MESSAGES'],
     usage: 'help',
     alias: ['h', 'cmds', 'commands', 'cmdlist'],
     execute: async data => {

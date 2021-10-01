@@ -1,6 +1,7 @@
 module.exports = {
     name: 'snipe',
     description: 'Snipe last known deleted message in the current channel',
+    permissions: ['SEND_MESSAGES'],
     usage: 'snipe',
     alias: ['s', 'last', 'lastmessage'],
     execute: async data => {
