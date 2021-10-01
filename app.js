@@ -64,9 +64,9 @@ client.on('ready', () => {
 
             msg.channel.send({embeds: [embed]});
         }
-        
+
         // add deleted message to the cache
-        deletedMessages.set(msg.channelId, msg);
+        if (msg.author.id !== client.user.id) deletedMessages.set(msg.channelId, msg);
     });
 
     // listen to user commands
