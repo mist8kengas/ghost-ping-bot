@@ -2,15 +2,20 @@
   <img src='https://github.com/mist8kengas/ghost-ping-bot/raw/master/assets/logo.png' alt='' width='128px' height='128px' data-colorset='3d2645-832161-da4167-f0eff4'>
 </p>
 <p align='center'>
-  <img src='https://img.shields.io/github/issues/mist8kengas/ghost-ping-bot?style=for-the-badge' alt='Repo Issues' title='Repo Issues'/>
-  <img src='https://img.shields.io/github/stars/mist8kengas/ghost-ping-bot?style=for-the-badge' alt='Repo Stars' title='Repo Stars'/>
-  <img src='https://img.shields.io/github/license/mist8kengas/ghost-ping-bot?style=for-the-badge' alt='License' title='License'/>
+  [![Repo Issues](https://img.shields.io/github/issues/mist8kengas/ghost-ping-bot?style=for-the-badge)](https://github.com/mist8kengas/ghost-ping-bot/issues)
+  [![Repo Stars](https://img.shields.io/github/stars/mist8kengas/ghost-ping-bot?style=for-the-badge)](https://github.com/mist8kengas/ghost-ping-bot/stargazers)
+  [![License](https://img.shields.io/github/license/mist8kengas/ghost-ping-bot?style=for-the-badge)](https://github.com/mist8kengas/ghost-ping-bot/blob/master/LICENSE)
 </p>
 
 ## ghost-ping-bot
 Detects ghost pings in your Discord server
 
 [Invite the bot](https://discord.com/api/oauth2/authorize?client_id=893091855410036737&permissions=207936&scope=bot)
+
+Features:
+- Detect and send ghost ping alerts
+- Snipe messages
+- ...and more to come!
 
 Requirements:
 - Node.js v16 (recommended: v16.8.0 or newer)
