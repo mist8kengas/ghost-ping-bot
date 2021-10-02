@@ -53,7 +53,7 @@ client.on('ready', () => {
 
     // listen to delete messages
     client.on('messageDelete', msg => {
-        if (msg.mentions.users.size > 0) {
+        if (msg.mentions.users.size > 0 && !msg.author.bot) {
             let embed = newEmbed();
             embed.setThumbnail(msg.author.displayAvatarURL({format: "png", dynamic: true}));
             embed.addFields([
@@ -66,7 +66,7 @@ client.on('ready', () => {
         }
 
         // add deleted message to the cache
-        if (msg.author.id !== client.user.id) deletedMessages.set(msg.channelId, msg);
+        if (msg.author.id != client.user.id) deletedMessages.set(msg.channelId, msg);
     });
 
     // listen to user commands
