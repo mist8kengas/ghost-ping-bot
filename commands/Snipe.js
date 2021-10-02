@@ -14,7 +14,7 @@ module.exports = {
             embed.setThumbnail(deletedMessage.author.displayAvatarURL({format: "png", dynamic: true}));
             embed.addFields([
                 {name: 'User:', value: `${deletedMessage.author}`},
-                {name: 'Message:', value: deletedMessage.content}
+                {name: 'Message:', value: deletedMessage.content || deletedMessage.attachments.entries().next().value[1].url}
             ]);
         }
         else {
