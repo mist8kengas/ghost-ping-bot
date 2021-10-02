@@ -10,11 +10,13 @@ module.exports = {
         embed = newEmbed().setTimestamp();
 
         if (deletedMessage && !deletedMessage.embeds[0]) {
+            let attachment = deletedMessage.attachments.size > 0 ? deletedMessage.content + '\n' + deletedMessage.attachments.entries().next().value[1].url : undefined;
+
             embed.setTitle('Sniped a message!');
             embed.setThumbnail(deletedMessage.author.displayAvatarURL({format: "png", dynamic: true}));
             embed.addFields([
                 {name: 'User:', value: `${deletedMessage.author}`},
-                {name: 'Message:', value: deletedMessage.content || deletedMessage.attachments.entries().next().value[1].url}
+                {name: 'Message:', value: attachment || deletedMessage.content}
             ]);
         }
         else {
