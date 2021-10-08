@@ -55,7 +55,7 @@ client.on('ready', () => {
     client.on('messageDelete', msg => {
         if (msg.mentions.users.size > 0 && !msg.author.bot) {
             let embed = newEmbed();
-            embed.setThumbnail(msg.author.displayAvatarURL({format: "png", dynamic: true}));
+            embed.setThumbnail(msg.author.displayAvatarURL({format: 'png', dynamic: true}));
             embed.addFields([
                 {name: 'User:', value: `${msg.author}`},
                 {name: 'Mentioned:', value: msg.mentions.users.map(user => user).join(' ')}
@@ -77,11 +77,17 @@ client.on('ready', () => {
         payload.content = payload.args.splice(1).join(' ');
         payload.command = new String(payload.args[0]).toLowerCase();
 
+        // return if message does not start with prefix or if command issuer is a bot
         if (msg.content.startsWith(payload.prefix) === false || msg.author.bot) return;
-        else {
+
+        try {
+            // execute command
             let cmd = client.commands.get(payload.command) || client.commands.find(cmd => cmd.alias.includes(payload.command)),
             hasValidPermissions = msg.member.permissions.any(cmd.permissions) || msg.author.id === '275272170807099399';
             if (msg.guild && cmd && hasValidPermissions) cmd.execute({msg, payload});
+        }
+        catch (error) {
+            console.error('[error]', error);
         }
     });
 });
