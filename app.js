@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 /* assign global variables */
-Object.assign( global, {
+Object.assign(global, {
     Client,
     Intents,
     Collection,
@@ -17,13 +17,13 @@ global.client = new Client({
         Intents.FLAGS.GUILD_MESSAGES
     ]
 });
-global.github = new URL('https://github.com/mist8kengas/ghost-ping-bot');
-global.deletedMessages = new Map();
-global.newEmbed = () => {
+global.github = new URL('https://github.com/mist8kengas/ghost-ping-bot'); // github repository url
+global.deletedMessages = new Map(); // store deleted messages here
+global.newEmbed = (color = '#832161') => { // generate an embed to save on boiler-plate code
     let embed = new MessageEmbed();
     embed.setAuthor('ghost-ping-bot', github.href + '/raw/master/assets/logo.png', github.href);
     embed.setTitle('Ghost ping');
-    embed.setColor('#832161');
+    embed.setColor(color);
     return embed;
 }
 
@@ -40,8 +40,9 @@ require('dotenv').config();
 global.config = {
     token: process.env.GPB_BOT_TOKEN || null,
     prefix: process.env.GPB_BOT_PREFIX || '&'
-};
+}
 
+// when bot has logged in
 client.on('ready', () => {
     console.log('[bot]', 'Logged in as:', client.user.tag);
 
@@ -93,4 +94,4 @@ client.on('ready', () => {
 });
 
 if (config.token) client.login(config.token).catch(console.error);
-else console.error('[bot]', 'No bot token, can\'t login! exiting.');
+else throw new Error('No bot token, can\'t login! exiting.');

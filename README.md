@@ -2,6 +2,7 @@
   <img src='https://github.com/mist8kengas/ghost-ping-bot/raw/master/assets/logo.png' alt='' width='128px' height='128px' data-colorset='3d2645-832161-da4167-f0eff4'>
 </p>
 <p align='center'>
+
   [![Repo Issues](https://img.shields.io/github/issues/mist8kengas/ghost-ping-bot?style=for-the-badge)](https://github.com/mist8kengas/ghost-ping-bot/issues)
   [![Repo Stars](https://img.shields.io/github/stars/mist8kengas/ghost-ping-bot?style=for-the-badge)](https://github.com/mist8kengas/ghost-ping-bot/stargazers)
   [![License](https://img.shields.io/github/license/mist8kengas/ghost-ping-bot?style=for-the-badge)](https://github.com/mist8kengas/ghost-ping-bot/blob/master/LICENSE)

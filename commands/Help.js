@@ -4,8 +4,9 @@ module.exports = {
     permissions: ['SEND_MESSAGES'],
     usage: 'help',
     alias: ['h', 'cmds', 'commands', 'cmdlist'],
-    execute: async data => {
+    execute: async (data) => {
         let {msg} = data, embed = newEmbed().setTimestamp().setTitle('Commands list');
+
         client.commands.map((cmd, cmdName) => embed.addField(
             cmdName,
             `> **Description:** ${cmd.description}\n` +

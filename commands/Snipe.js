@@ -4,10 +4,8 @@ module.exports = {
     permissions: ['SEND_MESSAGES'],
     usage: 'snipe',
     alias: ['s', 'last', 'lastmessage'],
-    execute: async data => {
-        const {msg} = data,
-        deletedMessage = deletedMessages.get(msg.channelId),
-        embed = newEmbed().setTimestamp();
+    execute: async (data) => {
+        const {msg} = data, embed = newEmbed().setTimestamp(), deletedMessage = deletedMessages.get(msg.channelId);
 
         if (deletedMessage && !deletedMessage.embeds[0]) {
             let attachment = deletedMessage.attachments.size > 0 ? deletedMessage.content + '\n' + deletedMessage.attachments.entries().next().value[1].url : undefined;
@@ -15,7 +13,7 @@ module.exports = {
             embed.setTitle('Sniped a message!');
             embed.setThumbnail(deletedMessage.author.displayAvatarURL({format: 'png', dynamic: true}));
             embed.addFields([
-                {name: 'User:', value: `${deletedMessage.author}`},
+                {name: 'User:', value: String(deletedMessage.author)},
                 {name: 'Message:', value: attachment || deletedMessage.content}
             ]);
         }
