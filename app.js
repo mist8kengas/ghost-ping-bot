@@ -63,7 +63,9 @@ client.on('ready', () => {
             ]);
             embed.setTimestamp();
 
-            msg.channel.send({embeds: [embed]});
+            msg.channel.send({embeds: [embed]}).catch((reason) => {
+                console.error('[error]', reason);
+            });
         }
 
         // add deleted message to the cache
