@@ -1,12 +1,10 @@
 const fs = require('fs');
 
 /* assign global variables */
-Object.assign(global, {
-    Client,
-    Intents,
-    Collection,
-    MessageEmbed,
-} = require('discord.js'));
+Object.assign(
+    global,
+    ({ Client, Intents, Collection, MessageEmbed } = require('discord.js'))
+);
 
 global.client = new Client({
     intents: [
@@ -14,24 +12,29 @@ global.client = new Client({
         Intents.FLAGS.GUILD_MEMBERS,
         Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
         Intents.FLAGS.GUILD_PRESENCES,
-        Intents.FLAGS.GUILD_MESSAGES
-    ]
+        Intents.FLAGS.GUILD_MESSAGES,
+    ],
 });
 global.github = new URL('https://github.com/mist8kengas/ghost-ping-bot'); // github repository url
 global.deletedMessages = new Map(); // store deleted messages here
-global.newEmbed = (color = '#832161') => { // generate an embed to save on boiler-plate code
-    let embed = new MessageEmbed();
-    embed.setAuthor('ghost-ping-bot', github.href + '/raw/master/assets/logo.png', github.href);
+global.newEmbed = (color = '#832161') => {
+    // generate an embed to save on boiler-plate code
+    const embed = new MessageEmbed();
+    embed.setAuthor(
+        'ghost-ping-bot',
+        github.href + '/raw/master/assets/logo.png',
+        github.href
+    );
     embed.setTitle('Ghost ping');
     embed.setColor(color);
     return embed;
-}
+};
 
 // add commands to bot
 client.commands = new Collection();
-let commandAssets = fs.readdirSync('./commands').filter(cmd => cmd.endsWith('.js'));
-for (let fileName of commandAssets) {
-    let cmd = require('./commands/' + fileName);
+const commandAssets = fs.readdirSync('./commands').filter((cmd) => cmd.endsWith('.js'));
+for (const fileName of commandAssets) {
+    const cmd = require('./commands/' + fileName);
     client.commands.set(cmd.name, cmd);
 }
 
@@ -39,8 +42,8 @@ for (let fileName of commandAssets) {
 require('dotenv').config();
 global.config = {
     token: process.env.GPB_BOT_TOKEN || null,
-    prefix: process.env.GPB_BOT_PREFIX || '&'
-}
+    prefix: process.env.GPB_BOT_PREFIX || '&',
+};
 
 // when bot has logged in
 client.on('ready', () => {
@@ -48,22 +51,27 @@ client.on('ready', () => {
 
     // set bot presence
     client.user.setPresence({
-        activities: [{name: 'Ghost pings 👻', type: 'WATCHING'}],
-        status: 'dnd'
+        activities: [{ name: 'Ghost pings 👻', type: 'WATCHING' }],
+        status: 'dnd',
     });
 
     // listen to delete messages
-    client.on('messageDelete', msg => {
+    client.on('messageDelete', (msg) => {
         if (msg.mentions.users.size > 0 && !msg.author.bot) {
-            let embed = newEmbed();
-            embed.setThumbnail(msg.author.displayAvatarURL({format: 'png', dynamic: true}));
+            const embed = newEmbed();
+            embed.setThumbnail(
+                msg.author.displayAvatarURL({ format: 'png', dynamic: true })
+            );
             embed.addFields([
-                {name: 'User:', value: `${msg.author}`},
-                {name: 'Mentioned:', value: msg.mentions.users.map(user => user).join(' ')}
+                { name: 'User:', value: `${msg.author}` },
+                {
+                    name: 'Mentioned:',
+                    value: msg.mentions.users.map((user) => user).join(' '),
+                },
             ]);
             embed.setTimestamp();
 
-            msg.channel.send({embeds: [embed]}).catch((reason) => {
+            msg.channel.send({ embeds: [embed] }).catch((reason) => {
                 console.error('[error]', reason);
             });
         }
@@ -73,8 +81,8 @@ client.on('ready', () => {
     });
 
     // listen to user commands
-    client.on('message', async msg => {
-        let payload = new Object;
+    client.on('message', async (msg) => {
+        const payload = new Object();
         payload.prefix = config.prefix;
         payload.args = msg.content.slice(payload.prefix.length).trim().split(' ');
         payload.content = payload.args.splice(1).join(' ');
@@ -85,15 +93,18 @@ client.on('ready', () => {
 
         try {
             // execute command
-            let cmd = client.commands.get(payload.command) || client.commands.find(cmd => cmd.alias.includes(payload.command)),
-            hasValidPermissions = msg.member.permissions.any(cmd.permissions) || msg.author.id === '275272170807099399';
-            if (msg.guild && cmd && hasValidPermissions) cmd.execute({msg, payload});
-        }
-        catch (error) {
+            const cmd =
+                    client.commands.get(payload.command) ||
+                    client.commands.find((cmd) => cmd.alias.includes(payload.command)),
+                hasValidPermissions =
+                    msg.member.permissions.any(cmd.permissions) ||
+                    msg.author.id === '275272170807099399';
+            if (msg.guild && cmd && hasValidPermissions) cmd.execute({ msg, payload });
+        } catch (error) {
             console.error('[error]', error);
         }
     });
 });
 
 if (config.token) client.login(config.token).catch(console.error);
-else throw new Error('No bot token, can\'t login! exiting.');
+else throw new Error("No bot token, can't login! exiting.");
