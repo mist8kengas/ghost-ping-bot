@@ -34,8 +34,9 @@ Installation:
 
 1. Clone this repository to a directory
 2. Install packages by using `npm install`
-3. Configure bot by using `.env` file:
+3. Build the bot by running `npm build`
+4. Configure bot by using `.env` file:
    | Value | Description |
    | --- | --- |
    | `GPB_BOT_TOKEN` | Discord bot token (required) |
-4. Run the bot by running `npm run start` in the directory
+5. Run the bot by running `npm run start` in the directory
