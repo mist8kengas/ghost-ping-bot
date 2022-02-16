@@ -1,13 +1,13 @@
-module.exports = {
+export default {
     name: 'snipe',
     description: 'Snipe last known deleted message in the current channel',
     permissions: ['SEND_MESSAGES'],
     usage: 'snipe',
     alias: ['s', 'last', 'lastmessage'],
     execute: async (data) => {
-        const { msg } = data,
+        const { msg, newEmbed, deletedMessages } = data,
             embed = newEmbed().setTimestamp(),
-            deletedMessage = deletedMessages.get(msg.channelId);
+            [deletedMessage, edited] = deletedMessages.get(msg.channelId);
 
         if (deletedMessage && !deletedMessage.embeds[0]) {
             const { attachments, author, content } = deletedMessage;
@@ -16,7 +16,7 @@ module.exports = {
                     ? content + '\n' + attachments.entries().next().value[1].url
                     : undefined;
 
-            embed.setTitle('Sniped a message!');
+            embed.setTitle(edited ? 'Sniped an edited message!' : 'Sniped a message!');
             embed.setThumbnail(author.displayAvatarURL({ format: 'png', dynamic: true }));
             embed.addFields([
                 { name: 'User:', value: String(author) },

@@ -1,11 +1,11 @@
-module.exports = {
+export default {
     name: 'help',
     description: 'Display commands and their uses',
     permissions: ['SEND_MESSAGES'],
     usage: 'help',
     alias: ['h', 'cmds', 'commands', 'cmdlist'],
     execute: async (data) => {
-        const { msg } = data,
+        const { msg, client, newEmbed } = data,
             embed = newEmbed().setTimestamp().setTitle('Commands list');
 
         client.commands.map((cmd, cmdName) =>
