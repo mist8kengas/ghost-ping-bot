@@ -1,15 +1,21 @@
+import { CommandPayload } from '..';
+
 export default {
     name: 'snipe',
     description: 'Snipe last known deleted message in the current channel',
     permissions: ['SEND_MESSAGES'],
     usage: 'snipe',
     alias: ['s', 'last', 'lastmessage'],
-    execute: async (data) => {
-        const { msg, newEmbed, deletedMessages } = data,
+    execute: async (data: CommandPayload) => {
+        const { msg, newEmbed, deletedMessages, github } = data,
             embed = newEmbed().setTimestamp(),
-            [deletedMessage, edited] = deletedMessages.get(msg.channelId);
+            [deletedMessage, edited] = deletedMessages.get(msg.channelId) || [undefined];
 
-        if (deletedMessage && !deletedMessage.embeds[0]) {
+        if (!deletedMessages.get(msg.channelId)) {
+            embed.setTitle('Sniping error');
+            embed.setThumbnail(github.href + '/raw/master/assets/warning.png');
+            embed.setDescription('Cannot snipe any messages in this channel!');
+        } else if (deletedMessage && !deletedMessage.embeds[0]) {
             const { attachments, author, content } = deletedMessage;
             const attachment =
                 attachments.size > 0
@@ -17,15 +23,13 @@ export default {
                     : undefined;
 
             embed.setTitle(edited ? 'Sniped an edited message!' : 'Sniped a message!');
-            embed.setThumbnail(author.displayAvatarURL({ format: 'png', dynamic: true }));
+            embed.setThumbnail(
+                author?.displayAvatarURL({ format: 'png', dynamic: true }) || ''
+            );
             embed.addFields([
                 { name: 'User:', value: String(author) },
                 { name: 'Message:', value: attachment || content },
             ]);
-        } else {
-            embed.setTitle('Sniping error');
-            embed.setThumbnail(github.href + '/raw/master/assets/warning.png');
-            embed.setDescription('Cannot snipe any messages in this channel!');
         }
 
         msg.reply({ embeds: [embed] }).catch((reason) => {

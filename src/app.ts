@@ -1,7 +1,7 @@
-import fs from 'fs';
-import { Client, Intents, Collection, MessageEmbed } from 'discord.js';
+import { readdirSync } from 'fs';
+import { Client, Intents, Collection, MessageEmbed, ColorResolvable } from 'discord.js';
 
-const client = new Client({
+const client = <ExtendedClient>new Client({
         intents: [
             Intents.FLAGS.GUILDS,
             Intents.FLAGS.GUILD_MEMBERS,
@@ -12,7 +12,7 @@ const client = new Client({
     }),
     github = new URL('https://github.com/mist8kengas/ghost-ping-bot'), // github repository url
     deletedMessages = new Map(), // store deleted messages here
-    newEmbed = (color = '#832161') => {
+    newEmbed = (color: ColorResolvable = '#832161') => {
         // generate an embed to save on boiler-plate code
         const embed = new MessageEmbed();
         embed.setAuthor(
@@ -27,7 +27,9 @@ const client = new Client({
 
 // add commands to bot
 client.commands = new Collection();
-const commandAssets = fs.readdirSync('./commands').filter((cmd) => cmd.endsWith('.js'));
+const commandAssets = readdirSync('./build/commands').filter((cmd) =>
+    cmd.endsWith('.js')
+);
 for (const fileName of commandAssets) {
     const { default: cmd } = await import('./commands/' + fileName);
     client.commands.set(cmd.name, cmd);
@@ -35,15 +37,18 @@ for (const fileName of commandAssets) {
 
 // .env config file
 import * as dotenv from 'dotenv';
+import { Command, ExtendedClient, PayloadObject } from '.';
 dotenv.config();
-global.config = {
+const config = {
     token: process.env.GPB_BOT_TOKEN || null,
     prefix: process.env.GPB_BOT_PREFIX || '&',
 };
 
 // when bot has logged in
 client.on('ready', () => {
-    console.log('[bot]', 'Logged in as:', client.user.tag);
+    if (!client.user) return;
+    const { user, guilds } = client;
+    console.log('[bot]', `Logged in as: ${user?.tag}`, `in ${guilds.cache.size} servers`);
 
     // set bot presence
     client.user.setPresence({
@@ -53,6 +58,7 @@ client.on('ready', () => {
 
     // listen to delete messages
     client.on('messageDelete', (msg) => {
+        if (!msg.author) return;
         if (msg.mentions.users.size > 0 && !msg.author.bot) {
             const embed = newEmbed();
             embed.setThumbnail(
@@ -73,12 +79,13 @@ client.on('ready', () => {
         }
 
         // add deleted message to the cache
-        if (msg.author.id != client.user.id)
+        if (msg.author.id != client.user?.id)
             deletedMessages.set(msg.channelId, [msg, false]);
     });
 
     // listen to ghost ping via edited messages
     client.on('messageUpdate', (oldMsg) => {
+        if (!oldMsg.author) return;
         if (oldMsg.mentions.users.size > 0 && !oldMsg.author.bot) {
             const embed = newEmbed();
             embed.setThumbnail(
@@ -99,13 +106,13 @@ client.on('ready', () => {
         }
 
         // add edited message to the cache
-        if (oldMsg.author.id != client.user.id)
+        if (oldMsg.author.id != client.user?.id)
             deletedMessages.set(oldMsg.channelId, [oldMsg, true]);
     });
 
     // listen to user commands
     client.on('message', async (msg) => {
-        const payload = new Object();
+        const payload = <PayloadObject>new Object();
         payload.prefix = config.prefix;
         payload.args = msg.content.slice(payload.prefix.length).trim().split(' ');
         payload.content = payload.args.splice(1).join(' ');
@@ -118,12 +125,14 @@ client.on('ready', () => {
             // execute command
             const cmd =
                     client.commands.get(payload.command) ||
-                    client.commands.find((cmd) => cmd.alias.includes(payload.command)),
+                    client.commands.find((cmd: Command) =>
+                        cmd.alias.includes(payload.command)
+                    ),
                 hasValidPermissions =
-                    msg.member.permissions.any(cmd.permissions) ||
+                    msg.member?.permissions.any(cmd.permissions) ||
                     msg.author.id === '275272170807099399';
             if (msg.guild && cmd && hasValidPermissions)
-                cmd.execute({ msg, payload, client, newEmbed, deletedMessages });
+                cmd.execute({ msg, payload, client, newEmbed, deletedMessages, github });
         } catch (error) {
             console.error('[error]', error);
         }

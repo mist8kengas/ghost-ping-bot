@@ -1,3 +1,5 @@
 .env
+*.tsbuildinfo
 assets/src
+build
 node_modules
