@@ -87,6 +87,19 @@ client.on('ready', () => {
     client.on('messageUpdate', (oldMsg) => {
         if (!oldMsg.author) return;
         if (oldMsg.mentions.users.size > 0 && !oldMsg.author.bot) {
+            // if message is a reply
+            // then ignore if mentions
+            // is the reference message
+            //
+            // https://github.com/mist8kengas/ghost-ping-bot/issues/2
+            const { repliedUser } = oldMsg.mentions;
+            if (
+                repliedUser &&
+                oldMsg.mentions.users.size === 1 &&
+                oldMsg.mentions.has(repliedUser.id)
+            )
+                return;
+
             const embed = newEmbed();
             embed.setThumbnail(
                 oldMsg.author.displayAvatarURL({ format: 'png', dynamic: true })
