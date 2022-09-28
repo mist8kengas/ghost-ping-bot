@@ -1,27 +1,30 @@
-import { Command, CommandPayload } from '..';
+import { Command } from '..';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import newEmbed from '../utils/embed.js';
 
-export default {
+const command: Command = {
+    data: new SlashCommandBuilder()
+        .setName('help')
+        .setDescription('Display commands and their uses'),
     name: 'help',
     description: 'Display commands and their uses',
-    permissions: ['SEND_MESSAGES'],
     usage: 'help',
-    alias: ['h', 'cmds', 'commands', 'cmdlist'],
-    execute: async (data: CommandPayload) => {
-        const { msg, client, newEmbed } = data,
-            embed = newEmbed().setTimestamp().setTitle('Commands list');
+    execute: async ({ client, interaction }) => {
+        if (!interaction.inGuild()) return;
+
+        const embed = newEmbed().setTimestamp().setTitle('Commands list');
 
         client.commands.map((cmd: Command, cmdName: string) =>
-            embed.addField(
-                cmdName,
-                `> **Description:** ${cmd.description}\n` +
-                    `> **Usage:** ${cmd.usage}\n` +
-                    `> **Aliases:** ${cmd.alias.join(', ')}`,
-                false
-            )
+            embed.addFields({
+                name: cmdName,
+                value:
+                    `> **Description:** ${cmd.description}\n` +
+                    `> **Usage:** ${cmd.usage}\n`,
+                inline: false,
+            })
         );
 
-        msg.reply({ embeds: [embed] }).catch((reason) => {
-            console.error('[error]', reason);
-        });
+        await interaction.reply({ embeds: [embed] });
     },
 };
+export default command;

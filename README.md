@@ -27,7 +27,7 @@ Features:
 
 Requirements:
 
--   Node.js v16 (recommended: v16.8.0 or newer)
+-   Node.js v16 (v16.9.0 or newer)
 -   Node Package Manager (npm) v6 (recommended: v6.14.9 or newer)
 
 Installation:
@@ -38,5 +38,11 @@ Installation:
 4. Configure bot by using `.env` file:
    | Value | Description |
    | --- | --- |
+   | `GPB_BOT_ID` | Discord bot application token (required) |
    | `GPB_BOT_TOKEN` | Discord bot token (required) |
 5. Run the bot by running `npm run start` in the directory
+
+Usage:
+
+-   Type `/help` to view the list of available commands
+-   Bot will automatically send a message in the same channel as where the ghost ping happened

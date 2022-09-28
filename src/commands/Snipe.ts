@@ -1,17 +1,23 @@
-import { CommandPayload } from '..';
+import { Command } from '..';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import newEmbed from '../utils/embed.js';
 
-export default {
+const command: Command = {
+    data: new SlashCommandBuilder()
+        .setName('snipe')
+        .setDescription('Snipe last known deleted message in the current channel'),
     name: 'snipe',
     description: 'Snipe last known deleted message in the current channel',
-    permissions: ['SEND_MESSAGES'],
     usage: 'snipe',
-    alias: ['s', 'last', 'lastmessage'],
-    execute: async (data: CommandPayload) => {
-        const { msg, newEmbed, deletedMessages, github } = data,
-            embed = newEmbed().setTimestamp(),
-            [deletedMessage, edited] = deletedMessages.get(msg.channelId) || [undefined];
+    execute: async ({ interaction, externals: { deletedMessages, github } }) => {
+        if (!interaction.inGuild()) return;
 
-        if (!deletedMessages.get(msg.channelId)) {
+        const channelId = interaction.channelId || '';
+
+        const embed = newEmbed().setTimestamp(),
+            [deletedMessage, edited] = deletedMessages.get(channelId) || [undefined];
+
+        if (!deletedMessages.get(channelId)) {
             embed.setTitle('Sniping error');
             embed.setThumbnail(github.href + '/raw/master/assets/warning.png');
             embed.setDescription('Cannot snipe any messages in this channel!');
@@ -28,12 +34,11 @@ export default {
             );
             embed.addFields([
                 { name: 'User:', value: String(author) },
-                { name: 'Message:', value: attachment || content },
+                { name: 'Message:', value: String(attachment || content) },
             ]);
         }
 
-        msg.reply({ embeds: [embed] }).catch((reason) => {
-            console.error('[error]', reason);
-        });
+        await interaction.reply({ embeds: [embed] });
     },
 };
+export default command;

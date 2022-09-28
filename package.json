@@ -1,12 +1,13 @@
 {
   "name": "ghost-ping-bot",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Detects ghost pings in your Discord server",
   "main": "build/app.js",
   "scripts": {
-    "start": "node build/app.js",
+    "start": "npm run put-commands && node build/app.js",
     "build": "tsc --build",
-    "build:watch": "tsc --watch"
+    "build:watch": "tsc --watch",
+    "put-commands": "npm run build && node build/utils/deployCommands.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,8 @@
   },
   "homepage": "https://github.com/mist8kengas/ghost-ping-bot#readme",
   "dependencies": {
+    "@discordjs/builders": "^1.2.0",
+    "@discordjs/rest": "^1.2.0",
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0"
   },

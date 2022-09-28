@@ -1,22 +1,27 @@
 import {
     Client,
     ColorResolvable,
+    CommandInteraction,
     Message,
     MessageEmbed,
     PartialMessage,
     PermissionString,
 } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { Externals } from './handlers/interactionCreate';
+import newEmbed from './utils/embed.js';
 
 declare interface ExtendedClient extends Client {
     commands: Collection<string, any>;
+    newEmbed: typeof newEmbed;
+    deletedMessages: Map<string, [Message | PartialMessage, boolean]>;
 }
 
 declare interface Command {
+    data: SlashCommandBuilder;
     name: string;
     description: string;
-    permissions: PermissionString[];
     usage: string;
-    alias: string[];
     execute: (data: CommandPayload) => Promise<any>;
 }
 
@@ -28,10 +33,7 @@ declare interface PayloadObject {
 }
 
 declare interface CommandPayload {
-    msg: Message;
-    payload: PayloadObject;
     client: ExtendedClient;
-    newEmbed: (color?: ColorResolvable) => MessageEmbed;
-    deletedMessages: Map<string, [Message, boolean]>;
-    github: URL;
+    interaction: CommandInteraction;
+    externals: Externals;
 }

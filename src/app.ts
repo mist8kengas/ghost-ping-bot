@@ -1,5 +1,21 @@
 import { readdirSync } from 'fs';
-import { Client, Intents, Collection, MessageEmbed, ColorResolvable } from 'discord.js';
+import {
+    Client,
+    Intents,
+    Collection,
+    Interaction,
+    Message,
+    PartialMessage,
+} from 'discord.js';
+import { ExtendedClient } from '.';
+
+// import utils
+import newEmbed from './utils/embed.js';
+
+// handlers
+import messageDelete from './handlers/messageDelete.js';
+import messageUpdate from './handlers/messageUpdate.js';
+import interactionCreate from './handlers/interactionCreate.js';
 
 const client = <ExtendedClient>new Client({
         intents: [
@@ -10,20 +26,10 @@ const client = <ExtendedClient>new Client({
             Intents.FLAGS.GUILD_MESSAGES,
         ],
     }),
-    github = new URL('https://github.com/mist8kengas/ghost-ping-bot'), // github repository url
-    deletedMessages = new Map(), // store deleted messages here
-    newEmbed = (color: ColorResolvable = '#832161') => {
-        // generate an embed to save on boiler-plate code
-        const embed = new MessageEmbed();
-        embed.setAuthor(
-            'ghost-ping-bot',
-            github.href + '/raw/master/assets/logo.png',
-            github.href
-        );
-        embed.setTitle('Ghost ping');
-        embed.setColor(color);
-        return embed;
-    };
+    github = new URL('https://github.com/mist8kengas/ghost-ping-bot'); // github repository url
+
+client.deletedMessages = new Map<string, [Message | PartialMessage, boolean]>(); // store deleted messages here
+client.newEmbed = newEmbed;
 
 // add commands to bot
 client.commands = new Collection();
@@ -37,7 +43,6 @@ for (const fileName of commandAssets) {
 
 // .env config file
 import * as dotenv from 'dotenv';
-import { Command, ExtendedClient, PayloadObject } from '.';
 dotenv.config();
 const config = {
     token: process.env.GPB_BOT_TOKEN || null,
@@ -45,7 +50,7 @@ const config = {
 };
 
 // when bot has logged in
-client.on('ready', () => {
+client.once('ready', () => {
     if (!client.user) return;
     const { user, guilds } = client;
     console.log('[bot]', `Logged in as: ${user?.tag}`, `in ${guilds.cache.size} servers`);
@@ -57,98 +62,22 @@ client.on('ready', () => {
     });
 
     // listen to delete messages
-    client.on('messageDelete', (msg) => {
-        if (!msg.author) return;
-        if (msg.mentions.users.size > 0 && !msg.author.bot) {
-            const embed = newEmbed();
-            embed.setThumbnail(
-                msg.author.displayAvatarURL({ format: 'png', dynamic: true })
-            );
-            embed.addFields([
-                { name: 'User:', value: `${msg.author}` },
-                {
-                    name: 'Mentioned:',
-                    value: msg.mentions.users.map((user) => user).join(' '),
-                },
-            ]);
-            embed.setTimestamp();
-
-            msg.channel.send({ embeds: [embed] }).catch((reason) => {
-                console.error('[error]', reason);
-            });
-        }
-
-        // add deleted message to the cache
-        if (msg.author.id != client.user?.id)
-            deletedMessages.set(msg.channelId, [msg, false]);
-    });
+    client.on('messageDelete', (msg) => messageDelete(client, msg));
 
     // listen to ghost ping via edited messages
-    client.on('messageUpdate', (oldMsg) => {
-        if (!oldMsg.author) return;
-        if (oldMsg.mentions.users.size > 0 && !oldMsg.author.bot) {
-            // if message is a reply
-            // then ignore if mentions
-            // is the reference message
-            //
-            // https://github.com/mist8kengas/ghost-ping-bot/issues/2
-            const { repliedUser } = oldMsg.mentions;
-            if (
-                repliedUser &&
-                oldMsg.mentions.users.size === 1 &&
-                oldMsg.mentions.has(repliedUser.id)
-            )
-                return;
-
-            const embed = newEmbed();
-            embed.setThumbnail(
-                oldMsg.author.displayAvatarURL({ format: 'png', dynamic: true })
-            );
-            embed.addFields([
-                { name: 'User:', value: `${oldMsg.author}` },
-                {
-                    name: 'Mentioned:',
-                    value: oldMsg.mentions.users.map((user) => user).join(' '),
-                },
-            ]);
-            embed.setTimestamp();
-
-            oldMsg.channel.send({ embeds: [embed] }).catch((reason) => {
-                console.error('[error]', reason);
-            });
-        }
-
-        // add edited message to the cache
-        if (oldMsg.author.id != client.user?.id)
-            deletedMessages.set(oldMsg.channelId, [oldMsg, true]);
-    });
+    client.on(
+        'messageUpdate',
+        (oldMsg: Message | PartialMessage, newMsg: Message | PartialMessage) =>
+            messageUpdate(client, oldMsg, newMsg)
+    );
 
     // listen to user commands
-    client.on('message', async (msg) => {
-        const payload = <PayloadObject>new Object();
-        payload.prefix = config.prefix;
-        payload.args = msg.content.slice(payload.prefix.length).trim().split(' ');
-        payload.content = payload.args.splice(1).join(' ');
-        payload.command = new String(payload.args[0]).toLowerCase();
-
-        // return if message does not start with prefix or if command issuer is a bot
-        if (msg.content.startsWith(payload.prefix) === false || msg.author.bot) return;
-
-        try {
-            // execute command
-            const cmd =
-                    client.commands.get(payload.command) ||
-                    client.commands.find((cmd: Command) =>
-                        cmd.alias.includes(payload.command)
-                    ),
-                hasValidPermissions =
-                    msg.member?.permissions.any(cmd.permissions) ||
-                    msg.author.id === '275272170807099399';
-            if (msg.guild && cmd && hasValidPermissions)
-                cmd.execute({ msg, payload, client, newEmbed, deletedMessages, github });
-        } catch (error) {
-            console.error('[error]', error);
-        }
+    client.on('interactionCreate', (interaction: Interaction) => {
+        if (interaction.isCommand())
+            interactionCreate(client, interaction, {
+                deletedMessages: client.deletedMessages,
+                github,
+            });
     });
 });
 
