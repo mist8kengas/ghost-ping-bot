@@ -17,7 +17,7 @@
 
 Detects ghost pings in your Discord server
 
-[Invite the bot](https://discord.com/api/oauth2/authorize?client_id=893091855410036737&permissions=207936&scope=bot)
+[Invite the bot](https://discord.com/api/oauth2/authorize?client_id=893091855410036737&permissions=207936&scope=applications.commands%20bot)
 
 Features:
 
