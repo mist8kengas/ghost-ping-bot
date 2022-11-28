@@ -1,6 +1,5 @@
 import { Command } from '..';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import newEmbed from '../utils/embed.js';
 
 const command: Command = {
     data: new SlashCommandBuilder()
@@ -9,12 +8,12 @@ const command: Command = {
     name: 'snipe',
     description: 'Snipe last known deleted message in the current channel',
     usage: 'snipe',
-    execute: async ({ interaction, externals: { deletedMessages, github } }) => {
+    execute: async ({ client, interaction, externals: { deletedMessages, github } }) => {
         if (!interaction.inGuild()) return;
 
         const channelId = interaction.channelId || '';
 
-        const embed = newEmbed().setTimestamp(),
+        const embed = client.newEmbed().setTimestamp(),
             [deletedMessage, edited] = deletedMessages.get(channelId) || [undefined];
 
         if (!deletedMessages.get(channelId)) {

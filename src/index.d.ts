@@ -9,11 +9,16 @@ import {
 } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Externals } from './handlers/interactionCreate';
-import newEmbed from './utils/embed.js';
+import { ClientEmbed } from './utils/embed.js';
 
 declare interface ExtendedClient extends Client {
+    /**
+     *
+     * @description Semantic version number
+     */
+    version: `${number}.${number}.${number}`;
     commands: Collection<string, any>;
-    newEmbed: typeof newEmbed;
+    newEmbed: ClientEmbed;
     deletedMessages: Map<string, [Message | PartialMessage, boolean]>;
 }
 

@@ -1,6 +1,5 @@
 import { Message, PartialMessage } from 'discord.js';
 import { ExtendedClient } from '..';
-import newEmbed from '../utils/embed.js';
 
 export default function messageDelete(
     client: ExtendedClient,
@@ -8,7 +7,7 @@ export default function messageDelete(
 ) {
     if (!msg.author) return;
     if (msg.mentions.users.size > 0 && !msg.author.bot) {
-        const embed = newEmbed();
+        const embed = client.newEmbed();
         embed.setThumbnail(msg.author.displayAvatarURL({ format: 'png', dynamic: true }));
         embed.addFields([
             { name: 'User:', value: msg.author.toString() },

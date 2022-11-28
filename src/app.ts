@@ -6,6 +6,7 @@ import {
     Interaction,
     Message,
     PartialMessage,
+    ColorResolvable,
 } from 'discord.js';
 import { ExtendedClient } from '.';
 
@@ -16,6 +17,12 @@ import newEmbed from './utils/embed.js';
 import messageDelete from './handlers/messageDelete.js';
 import messageUpdate from './handlers/messageUpdate.js';
 import interactionCreate from './handlers/interactionCreate.js';
+
+// import version number from package.json
+import { readFileSync } from 'fs';
+const { version: PACKAGE_VERSION } = JSON.parse(
+    readFileSync('./package.json', { encoding: 'utf8' })
+);
 
 const client = <ExtendedClient>new Client({
         intents: [
@@ -28,8 +35,9 @@ const client = <ExtendedClient>new Client({
     }),
     github = new URL('https://github.com/mist8kengas/ghost-ping-bot'); // github repository url
 
+client.version = PACKAGE_VERSION;
 client.deletedMessages = new Map<string, [Message | PartialMessage, boolean]>(); // store deleted messages here
-client.newEmbed = newEmbed;
+client.newEmbed = (color?: ColorResolvable) => newEmbed(client, color);
 
 // add commands to bot
 client.commands = new Collection();

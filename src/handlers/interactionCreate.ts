@@ -1,6 +1,5 @@
 import { Command, ExtendedClient } from '..';
 import { CommandInteraction, Message, PartialMessage } from 'discord.js';
-import newEmbed from '../utils/embed.js';
 
 export interface Externals {
     deletedMessages: Map<string, [Message | PartialMessage, boolean]>;
@@ -26,9 +25,11 @@ export default async function interactionCreate(
         await interaction
             .reply({
                 embeds: [
-                    newEmbed().setDescription(
-                        ':warning: An error occured while trying to run this command.'
-                    ),
+                    client
+                        .newEmbed()
+                        .setDescription(
+                            ':warning: An error occured while trying to run this command.'
+                        ),
                 ],
                 ephemeral: true,
             })

@@ -1,6 +1,5 @@
 import { Command } from '..';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import newEmbed from '../utils/embed.js';
 
 const command: Command = {
     data: new SlashCommandBuilder()
@@ -12,7 +11,7 @@ const command: Command = {
     execute: async ({ client, interaction }) => {
         if (!interaction.inGuild()) return;
 
-        const embed = newEmbed().setTimestamp().setTitle('Commands list');
+        const embed = client.newEmbed().setTimestamp().setTitle('Commands list');
 
         client.commands.map((cmd: Command, cmdName: string) =>
             embed.addFields({

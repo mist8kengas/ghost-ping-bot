@@ -1,6 +1,5 @@
 import { Collection, Message, PartialMessage, User } from 'discord.js';
 import { ExtendedClient } from '..';
-import newEmbed from '../utils/embed.js';
 
 export default function messageUpdate(
     client: ExtendedClient,
@@ -43,7 +42,7 @@ export default function messageUpdate(
         )
             return;
 
-        const embed = newEmbed();
+        const embed = client.newEmbed();
         embed.setThumbnail(
             oldMsg.author.displayAvatarURL({ format: 'png', dynamic: true })
         );
