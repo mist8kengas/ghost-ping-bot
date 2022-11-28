@@ -13,7 +13,15 @@ export default function messageUpdate(
     const mentionsUsers = oldMsg.mentions.users.size > 0;
     const ghostUser = !oldMsg.mentions.users.equals(newMsg.mentions.users);
     const ghostRole = !oldMsg.mentions.roles.equals(newMsg.mentions.roles);
-    const ghostEveryone = !!oldMsg.mentions.everyone && !newMsg.mentions.everyone;
+    const ghostEveryone = oldMsg.mentions.everyone && !newMsg.mentions.everyone;
+
+    // prevent bot from crashing from mentioning a user and
+    // editing the message, but not removing the mention
+    // because of malformed embed field data
+    const sameMentions = !oldMsg.mentions.users
+        .difference(newMsg.mentions.users)
+        .map((user) => user).length;
+    if (sameMentions) return;
 
     if (mentionsUsers || ghostUser || ghostRole || ghostEveryone) {
         // if message is a reply
