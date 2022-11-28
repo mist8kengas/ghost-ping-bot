@@ -1,4 +1,4 @@
-import { Message, PartialMessage } from 'discord.js';
+import { Collection, Message, PartialMessage, User } from 'discord.js';
 import { ExtendedClient } from '..';
 import newEmbed from '../utils/embed.js';
 
@@ -14,6 +14,12 @@ export default function messageUpdate(
     const ghostUser = !oldMsg.mentions.users.equals(newMsg.mentions.users);
     const ghostRole = !oldMsg.mentions.roles.equals(newMsg.mentions.roles);
     const ghostEveryone = oldMsg.mentions.everyone && !newMsg.mentions.everyone;
+
+    // placeholder for a difference function
+    const ghostMentions = oldMsg.mentions.users.reduce((collection, user, key) => {
+        if (newMsg.mentions.users.get(key)) return collection;
+        return collection.set(key, user);
+    }, new Collection<string, User>());
 
     // prevent bot from crashing from mentioning a user and
     // editing the message, but not removing the mention
@@ -42,15 +48,12 @@ export default function messageUpdate(
             oldMsg.author.displayAvatarURL({ format: 'png', dynamic: true })
         );
         embed.addFields([
-            { name: 'User:', value: `${oldMsg.author}` },
+            { name: 'User:', value: oldMsg.author.toString() },
             {
                 name: 'Mentioned:',
                 value: ghostEveryone
                     ? '@everyone'
-                    : oldMsg.mentions.users
-                          .difference(newMsg.mentions.users)
-                          .map((user) => user)
-                          .join(' '),
+                    : ghostMentions.map((user) => user.toString()).join(' '),
             },
         ]);
         embed.setTimestamp();

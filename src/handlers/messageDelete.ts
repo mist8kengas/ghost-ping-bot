@@ -11,10 +11,10 @@ export default function messageDelete(
         const embed = newEmbed();
         embed.setThumbnail(msg.author.displayAvatarURL({ format: 'png', dynamic: true }));
         embed.addFields([
-            { name: 'User:', value: `${msg.author}` },
+            { name: 'User:', value: msg.author.toString() },
             {
                 name: 'Mentioned:',
-                value: msg.mentions.users.map((user) => user).join(' '),
+                value: msg.mentions.users.map((user) => user.toString()).join(' '),
             },
         ]);
         embed.setTimestamp();

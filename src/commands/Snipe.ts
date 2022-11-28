@@ -33,7 +33,7 @@ const command: Command = {
                 author?.displayAvatarURL({ format: 'png', dynamic: true }) || ''
             );
             embed.addFields([
-                { name: 'User:', value: String(author) },
+                { name: 'User:', value: author?.toString() || 'N/A' },
                 { name: 'Message:', value: String(attachment || content) },
             ]);
         }
