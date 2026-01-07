@@ -7,7 +7,7 @@ import {
     PartialMessage,
     PermissionString,
 } from 'discord.js';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from '@discordjs/builders';
 import { Externals } from './handlers/interactionCreate';
 import { ClientEmbed } from './utils/embed.js';
 
@@ -23,7 +23,7 @@ declare interface ExtendedClient extends Client {
 }
 
 declare interface Command {
-    data: SlashCommandBuilder;
+    data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
     name: string;
     description: string;
     usage: string;

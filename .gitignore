@@ -3,3 +3,4 @@
 assets/src
 build
 node_modules
+whitelist.json
