@@ -1,3 +1,5 @@
 .github
 package*.json
 tsconfig.*
+build
+node_modules
