@@ -1,5 +1,6 @@
 .github
-package*.json
-tsconfig.*
+.env
+*.tsbuildinfo
+assets
 build
 node_modules

@@ -1,0 +1,7 @@
+services:
+  bot:
+    image: ghcr.io/mist8kengas/ghost-ping-bot:latest
+    restart: unless-stopped
+    env_file: .env
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
