@@ -21,16 +21,30 @@ Detects ghost pings in your Discord server
 
 Features:
 
--   Detect and send ghost ping alerts
--   Snipe messages
--   ...and more to come!
+- Detect and send ghost ping alerts
+- Snipe messages
+- ...and more to come!
 
 Requirements:
 
--   Node.js v16 (v16.9.0 or newer)
--   Node Package Manager (npm) v6 (recommended: v6.14.9 or newer)
+- Node.js v16 (v16.9.0 or newer)
+- Node Package Manager (npm) v6 (recommended: v6.14.9 or newer)
 
 Installation:
+
+```sh
+# pull latest image
+docker image pull ghcr.io/mist8kengas/ghost-ping-bot:latest
+
+# run bot
+docker run --restart unless-stopped --env-file .env ghcr.io/mist8kengas/ghost-ping-bot:latest
+
+# run bot (via compose)
+curl -LO https://github.com/mist8kengas/ghost-ping-bot/raw/master/compose.yml
+docker compose up
+```
+
+Installation (building from source):
 
 1. Clone this repository to a directory
 2. Install packages by using `npm install`
@@ -44,5 +58,6 @@ Installation:
 
 Usage:
 
--   Type `/help` to view the list of available commands
--   Bot will automatically send a message in the same channel as where the ghost ping happened
+- Type `/help` to view the list of available commands
+- Bot will automatically send a message in the same channel as where the ghost ping happened
+
