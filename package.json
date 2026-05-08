@@ -7,6 +7,8 @@
     "start": "npm run put-commands && node build/app.js",
     "build": "tsc --build",
     "build:watch": "tsc --watch",
+    "lint": "prettier . --check",
+    "lint:fix": "prettier . --write",
     "put-commands": "npm run build && node build/utils/deployCommands.js"
   },
   "repository": {

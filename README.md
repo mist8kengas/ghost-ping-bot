@@ -60,4 +60,3 @@ Usage:
 
 - Type `/help` to view the list of available commands
 - Bot will automatically send a message in the same channel as where the ghost ping happened
-
